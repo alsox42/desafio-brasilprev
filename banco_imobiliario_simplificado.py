@@ -4,10 +4,10 @@ from lista_de_propriedades import get_lista_de_propriedades
 class Jogador(object):
 
     def __init__(self, tipo: str) -> None:
-        self._saldo = 300
-        self._comportamento = tipo
-        self._numero_de_propriedades_percorridas = 0
-        self._proxima_proprieda = 0
+        self._saldo: int = 300
+        self._comportamento: str = tipo
+        self._numero_de_propriedades_percorridas: int = 0
+        self._proxima_proprieda: int = 0
 
     @property
     def saldo(self) -> int:
@@ -54,9 +54,9 @@ class Partida(object):
         self.jogador_dois = Jogador("exigente")
         self.jogador_tres = Jogador("cauteloso")
         self.jogador_quatro = Jogador("aleatorio")
-        self._total_de_rodadas = 0
-        self.encerada_por_timeout = False
-        self.propriedades = get_lista_de_propriedades()
+        self._total_de_rodadas: int = 0
+        self.encerada_por_timeout: bool = False
+        self.propriedades: list = get_lista_de_propriedades()
 
     @property
     def total_de_rodadas(self) -> int:
@@ -124,16 +124,13 @@ class Partida(object):
         propriedade = self.propriedades[vai_para_essa_propriedade - 1]
 
         if not propriedade.get("proprietario") and jogador.saldo >= propriedade.get("custo_de_venda"):
-
             if jogador.comportamento == 'exigente' and propriedade.get('valor_aluguel') > 50:
-
                propriedade["proprietario"] = jogador
                jogador.paga(propriedade.get("custo_de_venda"))
 
             elif jogador.comportamento == 'cauteloso':
                 saldo_reserva = jogador.saldo - propriedade.get("custo_de_venda")
                 if saldo_reserva >= 80:
-
                     propriedade["proprietario"] = jogador
                     jogador.paga(propriedade.get("custo_de_venda"))
 
@@ -144,7 +141,6 @@ class Partida(object):
             elif jogador.comportamento == "impulsivo":
                 propriedade["proprietario"] = jogador
                 jogador.paga(propriedade.get("custo_de_venda"))
-
         else:
             if propriedade.get('proprietario'):
                 if propriedade.get("proprietario").comportamento != jogador.comportamento:
@@ -208,5 +204,3 @@ if __name__ == '__main__':
     comportamento_que_mais_vence.sort()
     print(f"Comportamento que mais vence {comportamento_que_mais_vence[-1]}")
     print('*' * 50)
-
-
