@@ -3,44 +3,44 @@ from lista_de_propriedades import get_lista_de_propriedades
 
 class Jogador(object):
 
-    def __init__(self, tipo):
+    def __init__(self, tipo: str) -> None:
         self._saldo = 300
         self._comportamento = tipo
         self._numero_de_propriedades_percorridas = 0
         self._proxima_proprieda = 0
 
     @property
-    def saldo(self):
+    def saldo(self) -> int:
         return self._saldo
 
     @saldo.setter
-    def saldo(self, valor):
+    def saldo(self, valor: int) -> None:
         self._saldo = valor
 
     @property
-    def comportamento(self):
+    def comportamento(self) -> str:
         return self._comportamento
 
     @comportamento.setter
-    def comportamento(self, tipo):
+    def comportamento(self, tipo: str) -> None:
         self._comportamento = tipo
 
-    def recebe(self, valor):
+    def recebe(self, valor: int) -> None:
         self.saldo = self.saldo + valor
 
-    def paga(self, valor):
+    def paga(self, valor: int) -> None:
         self.saldo = self.saldo - valor
 
-    def joga_o_dado(self):
+    def joga_o_dado(self) -> int:
         return random.randint(1, 6)
 
-    def proxima_proprieda(self, resultado_do_dado):
+    def proxima_proprieda(self, resultado_do_dado: int) -> int:
         self._proxima_proprieda += resultado_do_dado
         if self._proxima_proprieda > 20:
             self._proxima_proprieda -= 20
         return self._proxima_proprieda
 
-    def verifica_se_completou_uma_volta_no_tabuleiro(self, resultado_do_dado):
+    def verifica_se_completou_uma_volta_no_tabuleiro(self, resultado_do_dado: int) -> None:
         self._numero_de_propriedades_percorridas += resultado_do_dado
         if self._numero_de_propriedades_percorridas >= 20:
             self._numero_de_propriedades_percorridas = 0
@@ -49,7 +49,7 @@ class Jogador(object):
 
 class Partida(object):
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.jogador_um = Jogador("impulsivo")
         self.jogador_dois = Jogador("exigente")
         self.jogador_tres = Jogador("cauteloso")
@@ -59,15 +59,17 @@ class Partida(object):
         self.propriedades = get_lista_de_propriedades()
 
     @property
-    def total_de_rodadas(self):
+    def total_de_rodadas(self) -> int:
         return self._total_de_rodadas
 
     @total_de_rodadas.setter
-    def total_de_rodadas(self, valor):
+    def total_de_rodadas(self, valor: int) -> None:
         self._total_de_rodadas += valor
 
-    def gerenciamento_da_partida(self):
-        ordem_dos_jogadores_da_partida = self.define_ordem_de_jogadores()
+    def gerenciamento_da_partida(self) -> tuple:
+        ordem_dos_jogadores_da_partida = self.define_ordem_de_jogadores(
+        [self.jogador_um, self.jogador_dois, self.jogador_tres, self.jogador_quatro]
+        )
         fim_da_partida = False
         nome_do_vencedor = None
         while not fim_da_partida:
@@ -75,13 +77,7 @@ class Partida(object):
             fim_da_partida, nome_do_vencedor = self.fim_da_partida(resultado)
         return resultado, nome_do_vencedor, self.encerada_por_timeout, self.total_de_rodadas
 
-    def define_ordem_de_jogadores(self):
-        jogadores = [
-            self.jogador_um,
-            self.jogador_dois,
-            self.jogador_tres,
-            self.jogador_quatro
-        ]
+    def define_ordem_de_jogadores(self, jogadores: list) -> list:
         resultado = list()
         total_de_jogadores = len(jogadores)
         for _ in range(total_de_jogadores):
@@ -90,7 +86,7 @@ class Partida(object):
             jogadores.remove(jogador_escolhido_da_vez)
         return resultado
 
-    def fim_da_partida(self, jogadores):
+    def fim_da_partida(self, jogadores: list) -> tuple:
         conta_jogadores_eliminados = 0
         nome_do_vencedor = None
         if self.total_de_rodadas == 1000:
@@ -109,7 +105,7 @@ class Partida(object):
             return True, nome_do_vencedor
         return False, None
 
-    def rodada(self, jogadores):
+    def rodada(self, jogadores: list) -> list:
         self.total_de_rodadas = 1
         for jogador in jogadores:
             if jogador.saldo > 0:
@@ -122,7 +118,7 @@ class Partida(object):
 
         return jogadores
 
-    def tabuleiro(self, jogador):
+    def tabuleiro(self, jogador: Jogador):
         resultado_do_dado = jogador.joga_o_dado()
         vai_para_essa_propriedade = jogador.proxima_proprieda(resultado_do_dado)
         propriedade = self.propriedades[vai_para_essa_propriedade - 1]
